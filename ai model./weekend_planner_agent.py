@@ -2,7 +2,7 @@ import streamlit as st
 import cohere
 
 # Initialize Cohere client with your API key
-cohere_client = cohere.Client('WWCf2ZaYiofhEN70CSuXExt8AhA3FsjBAnjYRiKa')
+cohere_client = cohere.Client('your_cohere_api')
 
 # Streamlit interface
 st.title("Weekend Planning Assistant - TimeOut")
