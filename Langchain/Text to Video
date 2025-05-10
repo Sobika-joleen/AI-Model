@@ -1,0 +1,48 @@
+# 🧱 Install required libraries
+!pip install diffusers transformers accelerate scipy safetensors
+!pip install moviepy gtts
+
+# 📦 Import libraries
+from diffusers import StableDiffusionPipeline
+import torch, os
+from PIL import Image
+from moviepy.editor import ImageSequenceClip, AudioFileClip
+from gtts import gTTS
+from IPython.display import Video
+
+# 🎤 Get input from the user
+prompt = input("Enter your prompt for image generation: ")
+narration_text = input("Enter narration text for the video: ")
+
+# 🚀 Load the Stable Diffusion model
+pipe = StableDiffusionPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-2",
+    torch_dtype=torch.float16,
+    safety_checker=None,
+    use_safetensors=True
+).to("cuda")
+
+# 🖼️ Generate images
+NUM_FRAMES = 5
+FRAME_DIR = "frames"
+os.makedirs(FRAME_DIR, exist_ok=True)
+
+for i in range(NUM_FRAMES):
+    image = pipe(prompt).images[0]
+    image.save(f"{FRAME_DIR}/frame{i}.png")
+
+# 🎬 Create video from images
+image_files = [f"{FRAME_DIR}/frame{i}.png" for i in range(NUM_FRAMES)]
+clip = ImageSequenceClip(image_files, fps=1)
+clip.write_videofile("video.mp4")
+
+# 🔊 Convert narration text to speech
+gtts = gTTS(narration_text)
+gtts.save("narration.mp3")
+
+# 🎞️ Combine audio with video
+final = clip.set_audio(AudioFileClip("narration.mp3"))
+final.write_videofile("final_video.mp4")
+
+# 📽️ Display the video
+Video("final_video.mp4", embed=True)
