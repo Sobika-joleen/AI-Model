@@ -1,6 +1,6 @@
 # 🧱 Install required libraries
 !pip install diffusers transformers accelerate scipy safetensors
-!pip install moviepy gtts
+!pip install moviepy gtts 
 
 # 📦 Import libraries
 from diffusers import StableDiffusionPipeline
